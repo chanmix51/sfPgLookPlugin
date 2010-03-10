@@ -16,13 +16,29 @@ class Plook
     }
   }
 
-  public static function getConnection($name)
+  public static function getConnection($name = null)
   {
+    if (is_null($name))
+    {
+      if (count(self::$connections) == 0)
+      {
+        throw new PlookException(sprintf('No database connections.'));
+      }
+      else
+      {
+        return self::$connections[0];
+      }
+    }
     if (array_key_exists($name, self::$connections))
     {
       return self::$connections[$name];
     }
 
     throw new PlookException(sprintf('No database connection with this name "%s".', $name));
+  }
+
+  public static function executeAnonymousSelect($sql, $connection = null)
+  {
+    return self::getConnection($connection)->getPdo()->query($sql, PDO::GET_OBJECT);
   }
 }

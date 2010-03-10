@@ -87,4 +87,9 @@ class sfPlookDatabase extends sfDatabase
   {
     $this->_handler = null;
   }
+
+  public function getPdo()
+  {
+    return $this->_handler;
+  }
 }
