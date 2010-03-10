@@ -10,8 +10,12 @@ abstract class PlookBaseObjectMap
 
   abstract public function getObjectClass();
   abstract protected function getObjectName();
-  abstract protected function getFieldNames();
   abstract protected function initialize();
+
+  public function getFieldNames()
+  {
+    return $this->field_names;
+  }
 
   public function __construct()
   {
@@ -50,7 +54,7 @@ abstract class PlookBaseObjectMap
       }
       else
       {
-        $type = PDO::PARAM_STR;
+        $type = null;
       }
 
       $stmt->bindValue($pos + 1, $value, $type);
@@ -85,5 +89,16 @@ abstract class PlookBaseObjectMap
     }
 
     return $stmts;
+  }
+
+  protected function createSqlAndFrom($values)
+  {
+    $sql = array();
+    foreach ($values as $key => $value)
+    {
+      $sql[] = "$key = ?";
+    }
+
+    return join(' AND ', $sql);
   }
 }
