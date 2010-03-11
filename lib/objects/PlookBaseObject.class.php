@@ -52,4 +52,10 @@ abstract class PlookBaseObject
         throw new PlookException(sprintf('No such method "%s:%s()"', get_class($this), $method));
     }
   }
+
+  public function hydrate(Array $values)
+  {
+    $this->fields = $values;
+    $this->status = self::EXIST;
+  }
 }

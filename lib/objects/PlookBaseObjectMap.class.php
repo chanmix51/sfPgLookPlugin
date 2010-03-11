@@ -67,13 +67,8 @@ abstract class PlookBaseObjectMap
     try
     {
       $stmt->execute();
-      $objects = array();
-      while ($object = $stmt->fetchObject($this->object_class))
-      {
-        $objects[] = $object;
-      }
 
-      return $objects;
+      return $this->createObjectsFromStmt($stmt);
     }
     catch(PDOException $e)
     {
@@ -111,5 +106,20 @@ abstract class PlookBaseObjectMap
     }
 
     return join(' AND ', $sql);
+  }
+
+  protected function createObjectsFromStmt(PDOStatement $stmt)
+  {
+    $objects = array();
+    $class_name = $this->object_class;
+    foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $values)
+    {
+      $object = new $class_name();
+      $object->hydrate($values);
+
+      $objects[] = $object;
+    }
+
+    return $objects;
   }
 }
