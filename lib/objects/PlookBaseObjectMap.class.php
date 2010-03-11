@@ -54,12 +54,26 @@ abstract class PlookBaseObjectMap
         $type = null;
       }
 
-      $stmt->bindValue($pos + 1, $value, $type);
+      if (is_null($type))
+      {
+        $stmt->bindValue($pos + 1, $value);
+      }
+      else
+      {
+        $stmt->bindValue($pos + 1, $value, $type);
+      }
     }
-    
+
     try
     {
-      return $stmt->execute();
+      $stmt->execute();
+      $objects = array();
+      while ($object = $stmt->fetchObject($this->object_class))
+      {
+        $objects[] = $object;
+      }
+
+      return $objects;
     }
     catch(PDOException $e)
     {

@@ -35,7 +35,7 @@ abstract class PlookBaseObject
     return array_key_exists($var, $this->fields);
   }
 
-  public function __call()
+  public function __call($method, $arguments)
   {
     $operation = substr(strtolower($method), 0, 3);
     $attribute = sfInflector::underscore(substr($method, 3));
