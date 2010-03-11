@@ -1,5 +1,5 @@
 <?php
 
-class PlookException 
+class PlookException extends sfException
 {
 }

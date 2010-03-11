@@ -26,7 +26,8 @@ class Plook
       }
       else
       {
-        return self::$connections[0];
+        $cnx = array_values(self::$connections);
+        return $cnx[0];
       }
     }
     if (array_key_exists($name, self::$connections))
@@ -40,5 +41,12 @@ class Plook
   public static function executeAnonymousSelect($sql, $connection = null)
   {
     return self::getConnection($connection)->getPdo()->query($sql, PDO::GET_OBJECT);
+  }
+
+  public static function getMapFor($class)
+  {
+    $class_name = $class.'Map';
+
+    return new $class_name();
   }
 }

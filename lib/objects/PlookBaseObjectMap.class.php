@@ -7,9 +7,6 @@ abstract class PlookBaseObjectMap
   protected $object_name;
   protected $field_names = array();
 
-
-  abstract public function getObjectClass();
-  abstract protected function getObjectName();
   abstract protected function initialize();
 
   public function getFieldNames()
@@ -29,7 +26,7 @@ abstract class PlookBaseObjectMap
     {
       throw new PlookException(sprintf('Missing object_class after initializing db map "%s".', get_class($this)));
     }
-    if (count($field_names) == 0)
+    if (count($this->field_names) == 0)
     {
       throw new PlookException(sprintf('No fields after initializing db map "%s", don\'t you prefer anonymous objects ?', get_class($this)));
     }
@@ -37,7 +34,7 @@ abstract class PlookBaseObjectMap
 
   protected function prepareStatement($sql)
   {
-    return $this->connection->prepare($sql);
+    return $this->connection->getPdo()->prepare($sql);
   }
 
   protected function doQuery(PDOStatement $stmt, $values)

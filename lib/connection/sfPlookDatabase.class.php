@@ -65,6 +65,7 @@ class sfPlookDatabase extends sfDatabase
   public function connect()
   {
     $connect_string = sprintf('%s:host=%s dbname=%s user=%s', 
+        $this->getParameter('adapter'),
         $this->getParameter('host'),
         $this->getParameter('database'),
         $this->getParameter('user') 
@@ -79,7 +80,7 @@ class sfPlookDatabase extends sfDatabase
     }
     catch (PDOException $e)
     {
-      throw new PlookException('Error connecting to the database. Driver said "%s".', $e->getMessage());
+      throw new PlookException(sprintf('Error connecting to the database with dsn «%s». Driver said "%s".', $connect_string, $e->getMessage()));
     }
   }
 
@@ -90,6 +91,11 @@ class sfPlookDatabase extends sfDatabase
 
   public function getPdo()
   {
+    if (is_null($this->_handler))
+    {
+      $this->connect();
+    }
+
     return $this->_handler;
   }
 }
