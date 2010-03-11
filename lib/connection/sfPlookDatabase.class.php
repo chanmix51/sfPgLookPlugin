@@ -25,34 +25,36 @@ class sfPlookDatabase extends sfDatabase
   {
     $dsn = $this->getParameter('dsn');
 
-    if (!preg_match('#([a-z]+):(?://(\w+)(:\w+)?@(\w+)(:\w+)?)?/(\w+)#', $dsn, $matchs))
+    if (!preg_match('#([a-z]+):(?://(\w+)(?::(\w+))?@(\w+)(:\w+)?)?/(\w+)#', $dsn, $matchs))
     {
-      throw sfConfigurationException(sprintf('Cound not parse DSN "%s".', $dsn));
+      throw new sfConfigurationException(sprintf('Cound not parse DSN "%s".', $dsn));
     }
 
-    if ($adapter = $matchs[1] == null)
+    if ($matchs[1] == null)
     {
       throw sfConfigurationException(sprintf('No protocol information in dsn "%s".', $dsn));
     }
+    $adapter = $matchs[1];
 
-    if ($user = $matchs[2] == null)
+    if ($matchs[2] == null)
     {
       throw sfConfigurationException(sprintf('No user information in dsn "%s".', $dsn));
     }
-
+    $user = $matchs[2];
     $pass = $matchs[3];
 
-    if ($host = $matchs[4] == null)
+    if ($matchs[4] == null)
     {
       throw sfConfigurationException(sprintf('No hostname name in dsn "%s".', $dsn));
     }
-
+    $host = $matchs[4];
     $port = $matchs[5];
 
-    if ($database = $matchs[6] == null)
+    if ($matchs[6] == null)
     {
       throw sfConfigurationException(sprintf('No database name in dsn "%s".', $dsn));
     }
+    $database = $matchs[6];
 
     $this->setParameter('adapter', $adapter);
     $this->setParameter('user', $user);
@@ -72,7 +74,7 @@ class sfPlookDatabase extends sfDatabase
         );
 
     $connect_string .= $this->getParameter('port') !== '' ? sprintf(' port=%d', $this->getParameter('port')) : '';
-    $connect_string .= $this->getParameter('pass') !== '' ? sprintf(' password=%d', $this->getParameter('pass')) : '';
+    $connect_string .= $this->getParameter('pass') !== '' ? sprintf(' password=%s', $this->getParameter('pass')) : '';
 
     try
     {
