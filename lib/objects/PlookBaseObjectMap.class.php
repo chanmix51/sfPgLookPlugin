@@ -122,4 +122,14 @@ abstract class PlookBaseObjectMap
 
     return $objects;
   }
+
+  public function findAll()
+  {
+    return $this->query(sprintf('SELECT * FROM %s;', $this->object_name), array());
+  }
+
+  public function findWhere($where, $values)
+  {
+    return $this->query(sprintf('SELECT * FROM %s WHERE %s;', $this->object_name, $where), $values);
+  }
 }
