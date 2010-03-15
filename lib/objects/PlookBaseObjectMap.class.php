@@ -6,8 +6,16 @@ abstract class PlookBaseObjectMap
   protected $object_class;
   protected $object_name;
   protected $field_names = array();
+  protected $pk_fields = array();
 
   abstract protected function initialize();
+
+  public function createObject()
+  {
+    $class_name = $this->object_class;
+
+    return new $class_name($this->pk_fields);
+  }
 
   public function getFieldNames()
   {
@@ -37,7 +45,7 @@ abstract class PlookBaseObjectMap
     return $this->connection->getPdo()->prepare($sql);
   }
 
-  protected function doQuery(PDOStatement $stmt, $values)
+  protected function bindParams($stmt, $values)
   {
     foreach ($values as $pos => $value)
     {
@@ -64,11 +72,18 @@ abstract class PlookBaseObjectMap
       }
     }
 
+    return $stmt;
+  }
+
+  protected function doQuery($sql, $values)
+  {
+    $stmt = $this->prepareStatement($sql);
+    $this->bindParams($stmt, $values);
     try
     {
       $stmt->execute();
 
-      return $this->createObjectsFromStmt($stmt);
+      return $stmt->rowCount() ? $this->createObjectsFromStmt($stmt) : null;
     }
     catch(PDOException $e)
     {
@@ -78,9 +93,7 @@ abstract class PlookBaseObjectMap
 
   public function query($sql, $values)
   {
-    $stmt = $this->prepareStatement($sql);
-
-    return $this->doQuery($stmt, $values);
+    return $this->doQuery($sql, $values);
   }
 
   public function queries($sql, $value_set)
@@ -111,10 +124,9 @@ abstract class PlookBaseObjectMap
   protected function createObjectsFromStmt(PDOStatement $stmt)
   {
     $objects = array();
-    $class_name = $this->object_class;
     foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $values)
     {
-      $object = new $class_name();
+      $object = $this->createObject();
       $object->hydrate($values);
 
       $objects[] = $object;
@@ -131,5 +143,22 @@ abstract class PlookBaseObjectMap
   public function findWhere($where, $values)
   {
     return $this->query(sprintf('SELECT * FROM %s WHERE %s;', $this->object_name, $where), $values);
+  }
+
+  public function getPrimaryKey()
+  {
+    return $this->pk_fields;
+  }
+
+  public function findByPk(Array $values)
+  {
+    if (count(array_diff(array_keys($values), $this->getPrimaryKey())) != 0)
+    {
+      throw new PlookException(sprintf('Given values "%s" do not match PK definition "%s" using class "%s".', print_r($values, true), print_r($this->getPrimaryKey(), true), get_class($this)));
+    }
+
+    $result = $this->findWhere($this->createSqlAndFrom($values), array_values($values));
+
+    return count($result) == 1 ? $result[0] : null;
   }
 }

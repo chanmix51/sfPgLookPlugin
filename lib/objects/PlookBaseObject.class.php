@@ -4,25 +4,14 @@ abstract class PlookBaseObject
 {
   const NONE     = 0;
   const EXIST    = 1;
-  const MODIFIED = 2;
 
   protected $fields = array();
   protected $status = 0;
   protected $primary_key = array();
-  protected $connection;
 
-  public function getConnection()
+  public function __construct(Array $pk = array())
   {
-  }
-
-  public function __set($var, $value)
-  {
-    $this->set($var, $value);
-  }
-
-  public function set($var, $value)
-  {
-    $this->fields[$var] = $value;
+    $this->setPrimaryKey($pk);
   }
 
   public function get($var)
@@ -57,5 +46,31 @@ abstract class PlookBaseObject
   {
     $this->fields = $values;
     $this->status = self::EXIST;
+  }
+
+  public function getStatus()
+  {
+    return $this->status;
+  }
+
+  public function getFields()
+  {
+    return $this->fields;
+  }
+
+  public function setPrimaryKey(Array $keys)
+  {
+    $this->primary_key = $keys;
+  }
+
+  public function getPrimaryKey()
+  {
+    $keys = array();
+    foreach ($this->primary_key as $key)
+    {
+      $keys[$key] = array_key_exists($key, $this->fields) ? $this->fields[$key] : null;
+    }
+
+    return $keys;
   }
 }
