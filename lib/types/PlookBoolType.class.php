@@ -2,13 +2,13 @@
 
 class PlookBoolType extends PlookBaseType
 {
-  public function __construct($data)
+  public static function fromPg($data)
   {
-    $this->data = ($data == 'true');
+    return ($data == 'true');
   }
 
-  public function toPg()
+  public static function toPg($data)
   {
-    return $this->data ? 'true' : 'false';
+    return $data ? 'true' : 'false';
   }
 }

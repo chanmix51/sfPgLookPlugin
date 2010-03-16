@@ -2,19 +2,12 @@
 
 abstract class PlookBaseType
 {
-  protected $data;
-
-  public function __construct($data)
-  {
-    $this->data = $data;
-  }
-
-  public function toPg()
+  public static function toPg($data)
   {
     return $data;
   }
 
-  public function __toString()
+  public static function fromPg($data)
   {
     return $data;
   }

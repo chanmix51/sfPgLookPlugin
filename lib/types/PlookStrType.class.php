@@ -2,8 +2,10 @@
 
 class PlookStrType extends PlookBaseType
 {
-  public function toPg()
+  public static function toPg($data)
   {
+    $data = str_replace("'", "''", $data);
+
     return "'$data'";
   }
 }

@@ -2,23 +2,18 @@
 
 class PlookTimestampType extends PlookBaseType
 {
-  public function __construct($data)
+  public static function fromPg($data)
   {
-    $this->data = new DateTime($data);
+    return new DateTime($data);
   }
 
-  public function __toString()
+  public static function toPg($data)
   {
-    return $this->data->format('U');
-  }
+    if (!$data instanceof DateTime)
+    {
+      $data = new DateTime($data);
+    }
 
-  public function toPg()
-  {
-    return $this->data->format('c');
-  }
-
-  public function getTimestamp()
-  {
-    return $this->data;
+    return $data->format('c');
   }
 }

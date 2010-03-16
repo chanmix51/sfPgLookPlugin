@@ -5,7 +5,7 @@ abstract class PlookBaseObjectMap
   protected $connection;
   protected $object_class;
   protected $object_name;
-  protected $field_names = array();
+  protected $field_definitions = array();
   protected $pk_fields = array();
 
   abstract protected function initialize();
@@ -17,9 +17,9 @@ abstract class PlookBaseObjectMap
     return new $class_name($this->pk_fields);
   }
 
-  public function getFieldNames()
+  public function getFieldDefinitions()
   {
-    return $this->field_names;
+    return $this->field_definitions;
   }
 
   public function __construct()
@@ -34,7 +34,7 @@ abstract class PlookBaseObjectMap
     {
       throw new PlookException(sprintf('Missing object_class after initializing db map "%s".', get_class($this)));
     }
-    if (count($this->field_names) == 0)
+    if (count($this->field_definitions) == 0)
     {
       throw new PlookException(sprintf('No fields after initializing db map "%s", don\'t you prefer anonymous objects ?', get_class($this)));
     }
@@ -127,7 +127,7 @@ abstract class PlookBaseObjectMap
     foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $values)
     {
       $object = $this->createObject();
-      $object->hydrate($values);
+      $object->hydrate($this->convertFromPg($values));
 
       $objects[] = $object;
     }
@@ -160,5 +160,31 @@ abstract class PlookBaseObjectMap
     $result = $this->findWhere($this->createSqlAndFrom($values), array_values($values));
 
     return count($result) == 1 ? $result[0] : null;
+  }
+
+  protected function convertFromPg(Array $values)
+  {
+    $out_values = array();
+    foreach ($values as $name => $value)
+    {
+      $converter = array_key_exists($name, $this->field_definitions) ? $this->field_definitions[$name] : null;
+      if (is_null($converter)) continue;
+
+      if (!preg_match('/([a-z]+)(?:\[([a-z]+)\])?/i', $converter, $matchs))
+      {
+        throw new PlookException(sprintf('Error, bad type converter expression "%s".', $converter));
+      }
+      $type = $matchs[1];
+      $subtype = count($matchs) > 2 ? $matchs[2] : '';
+
+      if ($subtype !== '')
+      {
+        call_user_func(array($type, 'setSubType'), $subtype);
+      }
+
+      $out_values[$name] = call_user_func(array($type, 'fromPg'), $value);
+    }
+
+    return $out_values;
   }
 }

@@ -1,74 +1,38 @@
 <?php
 
-class PlookArrayType extends PlookBaseType implements ArrayAccess, Iterator
+class PlookArrayType extends PlookBaseType
 {
-  public function __construct($data, $type)
+  protected static $subtype;
+
+  public static function setSubType($type)
+  {
+    self::$subtype = $type;
+  }
+
+  public static function fromPg($data)
   {
     $data = ltrim(rtrim($data, '}'), '{');
     $data_array = split(',', $data);
 
-    $this->data = array();
+    $out_data = array();
+    $type = self::$subtype;
     foreach ($data_array as $data)
     {
-      $this->data[] = new $type($data);
+      $out_data[] = call_user_func(array($type, 'fromPg'), $data);
     }
+
+    return $out_data;
   }
 
-  public function __toString()
-  {
-    throw new PlookException(sprintf('Cannot cast type Array into String.'));
-  }
-
-  public function toPg()
+  public static function toPg($data)
   {
     $string = array();
-    foreach($this->data as $data)
+    $type = self::$subtype;
+    foreach($data as $sub_data)
     {
-      $string[] = $data->toPg();
+      $string[] = call_user_func(array($type, 'toPg'), $sub_data);
     }
 
     return sprintf('{%s}', join(',', $string));
-  }
-
-  public function offsetSet($offset, $value) 
-  {
-    $this->data[$offset] = $value;
-  }
-  public function offsetExists($offset) 
-  {
-    return isset($this->data[$offset]);
-  }
-  public function offsetUnset($offset)
-  {
-    unset($this->data[$offset]);
-  }
-  public function offsetGet($offset) 
-  {
-    return isset($this->data[$offset]) ? $this->data[$offset] : null;
-  }
-
-  function rewind()
-  {
-    rewind($this->data);
-  }
-
-  function current()
-  {
-    return current($this->data);
-  }
-
-  function key()
-  {
-    return key($this->data);
-  }
-
-  function next()
-  {
-    next($this->data);
-  }
-
-  function valid()
-  {
-    return current($this->data) ? TRUE : FALSE;
   }
 }
