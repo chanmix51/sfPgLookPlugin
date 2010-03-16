@@ -127,7 +127,7 @@ abstract class PlookBaseObjectMap
     foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $values)
     {
       $object = $this->createObject();
-      $object->hydrate($this->convertFromPg($values));
+      $object->hydrate($this->convertPg($values, 'fromPg'));
 
       $objects[] = $object;
     }
@@ -162,7 +162,7 @@ abstract class PlookBaseObjectMap
     return count($result) == 1 ? $result[0] : null;
   }
 
-  protected function convertFromPg(Array $values)
+  protected function convertPg(Array $values, $method)
   {
     $out_values = array();
     foreach ($values as $name => $value)
@@ -182,7 +182,7 @@ abstract class PlookBaseObjectMap
         call_user_func(array($type, 'setSubType'), $subtype);
       }
 
-      $out_values[$name] = call_user_func(array($type, 'fromPg'), $value);
+      $out_values[$name] = call_user_func(array($type, $method), $value);
     }
 
     return $out_values;
