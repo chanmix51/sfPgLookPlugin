@@ -1,24 +1,34 @@
 <?php
 abstract class PlookBaseTableMap extends PlookBaseObjectMap 
 {
-  protected $pk_fields = array();
-
-  public function getPrimaryKey()
+  protected function checkObject(PlookBaseRecordObject $object, $message)
   {
-    return $this->pk_fields;
+    if (get_class($object) !== $this->class_name)
+    {
+      throw new PlookException($message);
+    }
   }
 
-  public function findByPk(Array $values)
+  public function deleteOne(PlookBaseRecordObject $object)
   {
-    if (count(array_diff(array_keys($values), $this->getPrimaryKey())) != 0)
+    $this->checkObject($object, sprintf('"%s" class does not know how to delete "%s" objects.', get_class($this), get_class($objects)));
+
+    if (!$object->getStatus() & PlookBaseObject::EXIST)
     {
-      throw new PlookException(sprintf('Given values "%s" do not match PK definition "%s" using class "%s".', print_r($values, true), print_r($this->getPrimaryKey(), true), get_class($this)));
+      throw new PlookException(sprintf('Given object class "%s" is not marked as existing in the database (status %d).', get_class($object), $object->getStatus()));
     }
 
-    $sql = $this->createSqlAndFrom($values);
-    $stmt = $this->query(sprintf('SELECT * FROM %s WHERE %s', $this->getObjectName(), $sql), array_values($values));
-
-    return $stmt->fetch($stmt);
+    $sql = sprintf('DELETE FROM %s WHERE %s', $this->object_name, $this->createSqlAndFrom(array_keys($object->getPrimaryKey())));
+    $this->query($sql, array_values($object->getPrimaryKey()));
   }
+/*
+  public function saveOne(PlookBaseRecordObject $object)
+  {
+    $this->checkObject($object, sprintf('"%s" class does not know how to save "%s" objects.', get_class($this), get_class($objects)));
+
+    if ($object->getStatus() && PlookBaseRecordObject::EXIST)
+    {
+      $sql = sprintf('UPDATE %s SET %s WHERE %s', $this->object_name, , $this->createSqlAndFrom($object->getPrimaryKey()));
+*/
 
 }
