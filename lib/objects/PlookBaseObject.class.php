@@ -6,12 +6,14 @@ abstract class PlookBaseObject
   const EXIST    = 1;
 
   protected $fields = array();
+  protected $fields_definition = array();
   protected $status = 0;
   protected $primary_key = array();
 
-  public function __construct(Array $pk = array())
+  public function __construct(Array $pk = array(), Array $fields_definition = array())
   {
     $this->setPrimaryKey($pk);
+    $this->fields_definition = $fields_definition;
   }
 
   public function get($var)
@@ -37,6 +39,8 @@ abstract class PlookBaseObject
       case 'get':
         return $this->get($attribute);
         break;
+      case 'add':
+        return $this->add($attribute, $arguments[0]);
       default:
         throw new PlookException(sprintf('No such method "%s:%s()"', get_class($this), $method));
     }

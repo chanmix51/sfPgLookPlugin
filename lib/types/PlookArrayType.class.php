@@ -33,6 +33,6 @@ class PlookArrayType extends PlookBaseType
       $string[] = call_user_func(array($type, 'toPg'), $sub_data);
     }
 
-    return sprintf('{%s}', join(',', $string));
+    return sprintf("'{%s}'", join(',', $string));
   }
 }

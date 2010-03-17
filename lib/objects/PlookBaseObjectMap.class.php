@@ -14,7 +14,7 @@ abstract class PlookBaseObjectMap
   {
     $class_name = $this->object_class;
 
-    return new $class_name($this->pk_fields);
+    return new $class_name($this->pk_fields, $this->field_definitions);
   }
 
   public function getFieldDefinitions()
