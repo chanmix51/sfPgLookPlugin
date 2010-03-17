@@ -46,7 +46,7 @@ abstract class PlookBaseTableMap extends PlookBaseObjectMap
     return $tmp;
   }
 
-  protected function parseForUpdate($values)
+  protected function parseForUpdate($object)
   {
     $tmp = array();
     foreach ($this->convertPg($object->getFields(), 'toPg') as $field_name => $field_value)
