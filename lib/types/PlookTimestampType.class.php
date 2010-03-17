@@ -14,6 +14,6 @@ class PlookTimestampType extends PlookBaseType
       $data = new DateTime($data);
     }
 
-    return $data->format('c');
+    return sprintf("'%s'", $data->format(sfConfig::get('app_timestamp_format', 'Y-m-d H:i:s.u')));
   }
 }

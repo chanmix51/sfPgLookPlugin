@@ -4,11 +4,11 @@ class PlookBoolType extends PlookBaseType
 {
   public static function fromPg($data)
   {
-    return ($data == 'true');
+    return ($data == 't');
   }
 
   public static function toPg($data)
   {
-    return $data ? 'true' : 'false';
+    return $data ? "'true'" : "'false'";
   }
 }
