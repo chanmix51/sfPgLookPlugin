@@ -1,6 +1,6 @@
 <?php
 
-class PlookArrayType extends PlookBaseType
+class PgLookArrayType extends PgLookBaseType
 {
   protected static $subtype;
 

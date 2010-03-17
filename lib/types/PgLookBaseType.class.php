@@ -1,6 +1,6 @@
 <?php
 
-abstract class PlookBaseType
+abstract class PgLookBaseType
 {
   public static function toPg($data)
   {

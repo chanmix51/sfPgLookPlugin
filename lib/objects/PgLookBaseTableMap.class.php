@@ -1,11 +1,11 @@
 <?php
-abstract class PlookBaseTableMap extends PlookBaseObjectMap 
+abstract class PgLookBaseTableMap extends PgLookBaseObjectMap 
 {
-  protected function checkObject(PlookBaseRecordObject $object, $message)
+  protected function checkObject(PgLookBaseRecordObject $object, $message)
   {
     if (get_class($object) !== $this->object_class)
     {
-      throw new PlookException($message);
+      throw new PgLookException($message);
     }
   }
 
@@ -15,11 +15,11 @@ abstract class PlookBaseTableMap extends PlookBaseObjectMap
     return $this->query($sql, array_values($pk));
   }
 
-  public function saveOne(PlookBaseRecordObject $object)
+  public function saveOne(PgLookBaseRecordObject $object)
   {
     $this->checkObject($object, sprintf('"%s" class does not know how to save "%s" objects.', get_class($this), get_class($object)));
 
-    if ($object->getStatus() & PlookBaseRecordObject::EXIST)
+    if ($object->getStatus() & PgLookBaseRecordObject::EXIST)
     {
       $sql = sprintf('UPDATE %s SET %s WHERE %s', $this->object_name, $this->parseForUpdate($object), $this->createSqlAndFrom($object->getPrimaryKey()));
 

@@ -1,6 +1,6 @@
 <?php
 
-class PlookTimestampType extends PlookBaseType
+class PgLookTimestampType extends PgLookBaseType
 {
   public static function fromPg($data)
   {

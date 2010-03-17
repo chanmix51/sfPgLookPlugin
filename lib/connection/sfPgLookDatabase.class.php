@@ -1,6 +1,6 @@
 <?php
 
-class sfPlookDatabase extends sfDatabase
+class sfPgLookDatabase extends sfDatabase
 {
   protected $_handler;
 
@@ -82,7 +82,7 @@ class sfPlookDatabase extends sfDatabase
     }
     catch (PDOException $e)
     {
-      throw new PlookException(sprintf('Error connecting to the database with dsn «%s». Driver said "%s".', $connect_string, $e->getMessage()));
+      throw new PgLookException(sprintf('Error connecting to the database with dsn «%s». Driver said "%s".', $connect_string, $e->getMessage()));
     }
   }
 

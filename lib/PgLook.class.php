@@ -1,6 +1,6 @@
 <?php
 
-class Plook
+class PgLook
 {
   static $connections = array();
 
@@ -9,7 +9,7 @@ class Plook
     $db_manager = $event->getSubject()->getDatabaseManager();
     foreach ($db_manager->getNames() as $name)
     {
-      if ($db_manager->getDatabase($name) instanceof sfPlookDatabase)
+      if ($db_manager->getDatabase($name) instanceof sfPgLookDatabase)
       {
         self::$connections[$name] = $db_manager->getDatabase($name);
       }
@@ -22,7 +22,7 @@ class Plook
     {
       if (count(self::$connections) == 0)
       {
-        throw new PlookException(sprintf('No database connections.'));
+        throw new PgLookException(sprintf('No database connections.'));
       }
       else
       {
@@ -35,7 +35,7 @@ class Plook
       return self::$connections[$name];
     }
 
-    throw new PlookException(sprintf('No database connection with this name "%s".', $name));
+    throw new PgLookException(sprintf('No database connection with this name "%s".', $name));
   }
 
   public static function executeAnonymousSelect($sql, $connection = null)

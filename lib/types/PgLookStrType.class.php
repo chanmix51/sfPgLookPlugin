@@ -1,6 +1,6 @@
 <?php
 
-class PlookStrType extends PlookBaseType
+class PgLookStrType extends PgLookBaseType
 {
   public static function toPg($data)
   {

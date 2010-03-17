@@ -1,6 +1,6 @@
 <?php
 
-abstract class PlookBaseObjectMap
+abstract class PgLookBaseObjectMap
 {
   protected $connection;
   protected $object_class;
@@ -28,15 +28,15 @@ abstract class PlookBaseObjectMap
 
     if (is_null($this->connection))
     {
-      throw new PlookException(sprintf('PDO connection not set after initializing db map "%s".', get_class($this)));
+      throw new PgLookException(sprintf('PDO connection not set after initializing db map "%s".', get_class($this)));
     }
     if (is_null($this->object_class))
     {
-      throw new PlookException(sprintf('Missing object_class after initializing db map "%s".', get_class($this)));
+      throw new PgLookException(sprintf('Missing object_class after initializing db map "%s".', get_class($this)));
     }
     if (count($this->field_definitions) == 0)
     {
-      throw new PlookException(sprintf('No fields after initializing db map "%s", don\'t you prefer anonymous objects ?', get_class($this)));
+      throw new PgLookException(sprintf('No fields after initializing db map "%s", don\'t you prefer anonymous objects ?', get_class($this)));
     }
   }
 
@@ -87,7 +87,7 @@ abstract class PlookBaseObjectMap
     }
     catch(PDOException $e)
     {
-      throw new PlookException('Error while performing SQL query «%s». The driver said "%s".', $sql, $e->getMessage());
+      throw new PgLookException('Error while performing SQL query «%s». The driver said "%s".', $sql, $e->getMessage());
     }
   }
 
@@ -154,7 +154,7 @@ abstract class PlookBaseObjectMap
   {
     if (count(array_diff(array_keys($values), $this->getPrimaryKey())) != 0)
     {
-      throw new PlookException(sprintf('Given values "%s" do not match PK definition "%s" using class "%s".', print_r($values, true), print_r($this->getPrimaryKey(), true), get_class($this)));
+      throw new PgLookException(sprintf('Given values "%s" do not match PK definition "%s" using class "%s".', print_r($values, true), print_r($this->getPrimaryKey(), true), get_class($this)));
     }
 
     $result = $this->findWhere($this->createSqlAndFrom($values), array_values($values));
@@ -173,7 +173,7 @@ abstract class PlookBaseObjectMap
 
       if (!preg_match('/([a-z]+)(?:\[([a-z]+)\])?/i', $converter, $matchs))
       {
-        throw new PlookException(sprintf('Error, bad type converter expression "%s".', $converter));
+        throw new PgLookException(sprintf('Error, bad type converter expression "%s".', $converter));
       }
       $type = $matchs[1];
       $subtype = count($matchs) > 2 ? $matchs[2] : '';

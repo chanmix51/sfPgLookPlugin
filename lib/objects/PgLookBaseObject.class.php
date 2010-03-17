@@ -1,6 +1,6 @@
 <?php
 
-abstract class PlookBaseObject
+abstract class PgLookBaseObject
 {
   const NONE     = 0;
   const EXIST    = 1;
@@ -42,7 +42,7 @@ abstract class PlookBaseObject
       case 'add':
         return $this->add($attribute, $arguments[0]);
       default:
-        throw new PlookException(sprintf('No such method "%s:%s()"', get_class($this), $method));
+        throw new PgLookException(sprintf('No such method "%s:%s()"', get_class($this), $method));
     }
   }
 

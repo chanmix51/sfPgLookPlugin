@@ -1,6 +1,6 @@
 <?php
 
-class PlookBaseRecordObject extends PlookBaseObject
+class PgLookBaseRecordObject extends PgLookBaseObject
 {
   const MODIFIED = 2;
 
@@ -30,7 +30,7 @@ class PlookBaseRecordObject extends PlookBaseObject
     }
     else
     {
-      throw new PlookException(sprintf('"%s" field is not an array.', $var));
+      throw new PgLookException(sprintf('"%s" field is not an array.', $var));
     }
   }
 }
