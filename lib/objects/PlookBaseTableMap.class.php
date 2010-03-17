@@ -9,17 +9,10 @@ abstract class PlookBaseTableMap extends PlookBaseObjectMap
     }
   }
 
-  public function deleteOne(PlookBaseRecordObject $object)
+  public function deleteByPk(Array $pk)
   {
-    $this->checkObject($object, sprintf('"%s" class does not know how to delete "%s" objects.', get_class($this), get_class($objects)));
-
-    if (!$object->getStatus() & PlookBaseObject::EXIST)
-    {
-      throw new PlookException(sprintf('Given object class "%s" is not marked as existing in the database (status %d).', get_class($object), $object->getStatus()));
-    }
-
-    $sql = sprintf('DELETE FROM %s WHERE %s', $this->object_name, $this->createSqlAndFrom(array_keys($object->getPrimaryKey())));
-    $this->query($sql, array_values($object->getPrimaryKey()));
+    $sql = sprintf('DELETE FROM %s WHERE %s', $this->object_name, $this->createSqlAndFrom($pk));
+    return $this->query($sql, array_values($pk));
   }
 
   public function saveOne(PlookBaseRecordObject $object)
