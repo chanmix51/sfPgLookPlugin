@@ -2,6 +2,7 @@
 
 class PgLook
 {
+  static const VERSION = "ALPHA - 10e1"
   static $connections = array();
 
   static function setConnectionsEvent(sfEvent $event)
