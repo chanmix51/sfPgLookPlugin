@@ -25,10 +25,11 @@ class sfPgLookDatabase extends sfDatabase
   {
     $dsn = $this->getParameter('dsn');
 
-    if (!preg_match('#([a-z]+):(?://(\w+)(?::(\w+))?@(\w+)(:\w+)?)?/(\w+)#', $dsn, $matchs))
+    if (!preg_match('#([a-z]+):(?://(\w+)(?::(\w+))?@(\w+)(?::(\w+))?)?/(\w+)#', $dsn, $matchs))
     {
       throw new sfConfigurationException(sprintf('Cound not parse DSN "%s".', $dsn));
     }
+
 
     if ($matchs[1] == null)
     {
