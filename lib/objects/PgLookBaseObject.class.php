@@ -4,6 +4,8 @@ abstract class PgLookBaseObject
 {
   const NONE     = 0;
   const EXIST    = 1;
+  const MODIFIED = 2;
+
 
   protected $fields = array();
   protected $fields_definition = array();
@@ -76,5 +78,35 @@ abstract class PgLookBaseObject
     }
 
     return $keys;
+  }
+
+  public function __set($var, $value)
+  {
+    $this->set($var, $value);
+  }
+
+  public function set($var, $value)
+  {
+    $this->fields[$var] = $value;
+    $this->status = $this->status | self::MODIFIED;
+  }
+
+  public function add($var, $value)
+  {
+    if (preg_match('/array/i', $this->fields_definition[$var]))
+    {
+      if ($this->has($var) && is_array($this->fields[$var]))
+      {
+        $this->fields[$var][] = $value;
+      }
+      else
+      {
+        $this->fields[$var] = array($value);
+      }
+    }
+    else
+    {
+      throw new PgLookException(sprintf('"%s" field is not an array.', $var));
+    }
   }
 }
