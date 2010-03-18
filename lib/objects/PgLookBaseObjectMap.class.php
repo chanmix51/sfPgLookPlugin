@@ -189,7 +189,7 @@ abstract class PgLookBaseObjectMap
     return $out_values;
   }
 
-  protected function checkObject(PgLookBaseRecordObject $object, $message)
+  protected function checkObject(PgLookBaseObject $object, $message)
   {
     if (get_class($object) !== $this->object_class)
     {
@@ -203,11 +203,11 @@ abstract class PgLookBaseObjectMap
     return $this->query($sql, array_values($pk));
   }
 
-  public function saveOne(PgLookBaseRecordObject $object)
+  public function saveOne(PgLookBaseObject $object)
   {
     $this->checkObject($object, sprintf('"%s" class does not know how to save "%s" objects.', get_class($this), get_class($object)));
 
-    if ($object->getStatus() & PgLookBaseRecordObject::EXIST)
+    if ($object->getStatus() & PgLookBaseObject::EXIST)
     {
       $sql = sprintf('UPDATE %s SET %s WHERE %s', $this->object_name, $this->parseForUpdate($object), $this->createSqlAndFrom($object->getPrimaryKey()));
 
