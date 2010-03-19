@@ -10,6 +10,16 @@ abstract class PgLookBaseObjectMap
 
   abstract protected function initialize();
 
+  protected function addField($name, $type)
+  {
+    if (array_key_exists($name, $this->field_definitions))
+    {
+      throw new PgLookException(sprintf('Field "%s" already set in class "%s".', $name, get_class($this)));
+    }
+
+    $this->field_definitions[$name] = $type;
+  }
+
   public function createObject()
   {
     $class_name = $this->object_class;
