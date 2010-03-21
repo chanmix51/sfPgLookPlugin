@@ -178,7 +178,11 @@ abstract class PgLookBaseObjectMap
     foreach ($values as $name => $value)
     {
       $converter = array_key_exists($name, $this->field_definitions) ? $this->field_definitions[$name] : null;
-      if (is_null($converter)) continue;
+      if (is_null($converter))
+      {
+        $out_values['name'] = $value;
+        continue;
+      }
       if (is_null($value)) continue;
 
       if (!preg_match('/([a-z]+)(?:\[([a-z]+)\])?/i', $converter, $matchs))
