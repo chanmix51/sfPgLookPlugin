@@ -91,13 +91,16 @@ abstract class PgLookBaseObjectMap
     $this->bindParams($stmt, $values);
     try
     {
-      $stmt->execute();
+      if (!$stmt->execute())
+      {
+        throw new PgLookSqlException($stmt, $sql);
+      }
 
       return $stmt->rowCount() ? $this->createObjectsFromStmt($stmt) : null;
     }
     catch(PDOException $e)
     {
-      throw new PgLookException('Error while performing SQL query «%s». The driver said "%s".', $sql, $e->getMessage());
+      throw new PgLookException('PDOException while performing SQL query «%s». The driver said "%s".', $sql, $e->getMessage());
     }
   }
 
