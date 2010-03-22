@@ -180,7 +180,7 @@ abstract class PgLookBaseObjectMap
       $converter = array_key_exists($name, $this->field_definitions) ? $this->field_definitions[$name] : null;
       if (is_null($converter))
       {
-        $out_values['name'] = $value;
+        $out_values[$name] = $value;
         continue;
       }
       if (is_null($value)) continue;
