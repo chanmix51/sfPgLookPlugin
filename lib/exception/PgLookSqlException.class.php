@@ -4,6 +4,14 @@ class PgLookSqlException extends PgLookException
 {
   protected $error_state;
 
+  /**
+   * __construct 
+   * 
+   * @param PDOStatement $stmt 
+   * @param mixed $sql 
+   * @access public
+   * @return void
+   */
   public function __construct(PDOStatement $stmt, $sql)
   {
     $this->error_state = $stmt->errorInfo();
@@ -13,7 +21,8 @@ class PgLookSqlException extends PgLookException
   /**
    * getSQLErrorState 
    * Returns the SQLSTATE of the last SQL error
-   * The list of SQLSTATEs is available at http://www.postgresql.org/docs/8.4/interactive/errcodes-appendix.html
+   * The list of SQLSTATEs is available at 
+   * http://www.postgresql.org/docs/8.4/interactive/errcodes-appendix.html
    *
    * @access public
    * @return void

@@ -145,7 +145,7 @@ abstract class PgLookBaseObjectMap
       $objects[] = $object;
     }
 
-    return $objects;
+    return new PgLookCollection($objects);
   }
 
   public function findAll()
