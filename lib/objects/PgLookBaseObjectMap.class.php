@@ -96,7 +96,8 @@ abstract class PgLookBaseObjectMap
         throw new PgLookSqlException($stmt, $sql);
       }
 
-      return $stmt->rowCount() ? $this->createObjectsFromStmt($stmt) : null;
+      return $this->createObjectsFromStmt($stmt);
+      //return $stmt->rowCount() ? $this->createObjectsFromStmt($stmt) : null;
     }
     catch(PDOException $e)
     {
