@@ -73,7 +73,7 @@ class PgLookCollection implements ArrayAccess, Iterator, Countable
 
   public function isLast()
   {
-    return $this->getResultNumber() == $this->count();
+    return $this->position == $this->count() - 1;
   }
 
   public function isEmpty()
@@ -83,21 +83,16 @@ class PgLookCollection implements ArrayAccess, Iterator, Countable
 
   public function isEven()
   {
-    return ($this->getResultNumber() % 2) == 0;
+    return ($this->position % 2) == 0;
   }
 
   public function isOdd()
   {
-    return ($this->getResultNumber() % 2) == 1;
+    return ($this->position % 2) == 1;
   }
 
   public function getOddEven()
   {
-    return $this->getResultNumber() % 2 ? 'odd' : 'even';
-  }
-  
-  protected function getResultNumber()
-  {
-    return $this->position + 1;
+    return $this->position % 2 ? 'odd' : 'even';
   }
 }
