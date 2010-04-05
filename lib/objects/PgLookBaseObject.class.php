@@ -51,12 +51,21 @@ abstract class PgLookBaseObject
   public function hydrate(Array $values)
   {
     $this->fields = $values;
-    $this->status = self::EXIST;
   }
 
-  public function getStatus()
+  public function extract()
+  {
+    return $this->fields;
+  }
+
+  public function _getStatus()
   {
     return $this->status;
+  }
+
+  public function _setStatus($status)
+  {
+    $this->status = $status;
   }
 
   public function getFields()

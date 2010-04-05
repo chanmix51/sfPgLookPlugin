@@ -141,6 +141,7 @@ abstract class PgLookBaseObjectMap
     {
       $object = $this->createObject();
       $object->hydrate($this->convertPg($values, 'fromPg'));
+      $object->_setStatus(PgLookBaseObject::EXIST);
 
       $objects[] = $object;
     }
@@ -224,7 +225,7 @@ abstract class PgLookBaseObjectMap
   {
     $this->checkObject($object, sprintf('"%s" class does not know how to save "%s" objects.', get_class($this), get_class($object)));
 
-    if ($object->getStatus() & PgLookBaseObject::EXIST)
+    if ($object->_getStatus() & PgLookBaseObject::EXIST)
     {
       $sql = sprintf('UPDATE %s SET %s WHERE %s', $this->object_name, $this->parseForUpdate($object), $this->createSqlAndFrom($object->getPrimaryKey()));
 
@@ -261,5 +262,15 @@ abstract class PgLookBaseObjectMap
     }
 
     return implode(',', $tmp);
+  }
+
+  public function hasField($field)
+  {
+    return array_key_exists($field, $this->field_definitions);
+  }
+
+  public function getTableName()
+  {
+    return $this->object_name;
   }
 }
