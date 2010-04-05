@@ -17,3 +17,5 @@ The abstraction layer turns data in your database into PHP objects in your code 
 *  arrays in postgres will be arrays in PHP
 
 For now, simple CRUD operations are merely supported, no code generation, no admin gen, no schema, no fixtures, just a kernel to make fast and efficient queries.
+
+Queries return Collections, with handy methods like in Propel 1.5 : isFirst, isLast, isOdd, getOddEven etc ...
