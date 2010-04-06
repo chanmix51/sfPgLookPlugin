@@ -5,9 +5,8 @@ class PgLook
   const VERSION = 'ALPHA - 10e1Dev';
   static $connections = array();
 
-  static function setConnectionsEvent(sfEvent $event)
+  public static function saveConnections(sfDatabaseManager $db_manager)
   {
-    $db_manager = $event->getSubject()->getDatabaseManager();
     foreach ($db_manager->getNames() as $name)
     {
       if ($db_manager->getDatabase($name) instanceof sfPgLookDatabase)
@@ -15,6 +14,11 @@ class PgLook
         self::$connections[$name] = $db_manager->getDatabase($name);
       }
     }
+  }
+
+  public static function setConnectionsEvent(sfEvent $event)
+  {
+    self::saveConnections($event->getSubject()->getDatabaseManager());
   }
 
   public static function getConnection($name = null)
