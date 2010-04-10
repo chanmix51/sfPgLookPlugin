@@ -3,6 +3,7 @@
 abstract class PgLookForm extends PgLookBaseForm
 {
   protected $object;
+  protected $is_new = true;
 
   abstract protected function getClassName();
 
@@ -64,8 +65,22 @@ abstract class PgLookForm extends PgLookBaseForm
       }
     }
 
-    $this->object = PgLook::getMapFor($this->getClassName())->createObject();
     $this->object->hydrate($values);
+    if (!$this->isNew())
+    {
+      $this->object->setStatus(PgLookBaseObject::EXIST);
+    }
+
+  }
+
+  public function isNew()
+  {
+    return $this->is_new;
+  }
+
+  public function setNew($new)
+  {
+    $this->is_new = (boolean) $new;
   }
 
 }
