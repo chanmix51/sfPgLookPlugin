@@ -50,7 +50,7 @@ abstract class PgLookBaseObject
 
   public function hydrate(Array $values)
   {
-    $this->fields = $values;
+    $this->fields = array_merge($this->fields, $values);
   }
 
   public function extract()
@@ -117,5 +117,15 @@ abstract class PgLookBaseObject
     {
       throw new PgLookException(sprintf('"%s" field is not an array.', $var));
     }
+  }
+
+  public function isNew()
+  {
+    return ! $this->status & self::EXIST;
+  }
+
+  public function isModified()
+  {
+    return $this->status & self::MODIFIED;
   }
 }
