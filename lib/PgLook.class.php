@@ -89,9 +89,9 @@ class PgLook
    * @access public
    * @return PDOStatement
    */
-  public static function executeAnonymousSelect($sql, $connection = null)
+  public static function executeAnonymousQuery($sql, $connection = null)
   {
-    return self::getConnection($connection)->getPdo()->query($sql, PDO::GET_OBJECT);
+    return self::getConnection($connection)->getPdo()->query($sql, PDO::FETCH_LAZY);
   }
 
   /**
