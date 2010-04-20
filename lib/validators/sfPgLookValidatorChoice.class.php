@@ -1,7 +1,29 @@
 <?php
 
+/**
+ * sfPgLookValidatorChoice 
+ * 
+ * @uses sfValidatorBase
+ * @package sfPgLookPlugin
+ * @version $id$
+ * @copyright 2010 Grégoire HUBERT 
+ * @author Grégoire HUBERT <hubert.greg@gmail.com>
+ * @license MIT/X11 {@link http://opensource.org/licenses/mit-license.php}
+ */
 class sfPgLookValidatorChoice extends sfValidatorBase
 {
+  /**
+   * configure 
+   * Configure the widget. Following options are accepted :
+   * model : the name of the model class to use
+   * method : The method's name to use to retreive the list
+   * column : the name of the field 
+   * 
+   * @param array $options 
+   * @param array $errors 
+   * @access public
+   * @return void
+   */
   public function configure($options = array(), $errors = array())
   {
     $this->addRequiredOption('model');
@@ -9,6 +31,14 @@ class sfPgLookValidatorChoice extends sfValidatorBase
     $this->addoption('column');
   }
 
+  /**
+   * doClean 
+   * @see sfValidatorBase
+   * 
+   * @param mixed $value 
+   * @access protected
+   * @return mixed
+   */
   protected function doClean($value)
   {
     $map_class = PgLook::getMapFor($this->getOption('model'));

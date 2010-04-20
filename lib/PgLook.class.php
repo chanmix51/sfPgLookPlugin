@@ -1,10 +1,28 @@
 <?php
 
+/**
+ * PgLook 
+ * 
+ * @package sfPgLookPlugin
+ * @version $id$
+ * @copyright 2010 Grégoire HUBERT 
+ * @author Grégoire HUBERT <hubert.greg@gmail.com>
+ * @license X11 {@link http://opensource.org/licenses/mit-license.php}
+ */
 class PgLook
 {
-  const VERSION = 'ALPHA - 10e1Dev';
+  const VERSION = 'ALPHA - 2';
   static $connections = array();
 
+  /**
+   * saveConnections 
+   * save the connection as static attribute
+   * 
+   * @param sfDatabaseManager $db_manager 
+   * @static
+   * @access public
+   * @return void
+   */
   public static function saveConnections(sfDatabaseManager $db_manager)
   {
     foreach ($db_manager->getNames() as $name)
@@ -16,11 +34,29 @@ class PgLook
     }
   }
 
+  /**
+   * setConnectionsEvent 
+   * When the factories are loaded, we save the sfPgLookDatabases 
+   * 
+   * @param sfEvent $event 
+   * @static
+   * @access public
+   * @return void
+   */
   public static function setConnectionsEvent(sfEvent $event)
   {
     self::saveConnections($event->getSubject()->getDatabaseManager());
   }
 
+  /**
+   * getConnection 
+   * Returns the corresponding sfPgLookDatabase or the first one if no name is provided
+   * 
+   * @param mixed $name 
+   * @static
+   * @access public
+   * @return sfPgLookDatabase 
+   */
   public static function getConnection($name = null)
   {
     if (is_null($name))
@@ -43,11 +79,30 @@ class PgLook
     throw new PgLookException(sprintf('No database connection with this name "%s".', $name));
   }
 
+  /**
+   * executeAnonymousSelect 
+   * Performs a raw SQL query
+   * 
+   * @param string $sql 
+   * @param string $connection 
+   * @static
+   * @access public
+   * @return PDOStatement
+   */
   public static function executeAnonymousSelect($sql, $connection = null)
   {
     return self::getConnection($connection)->getPdo()->query($sql, PDO::GET_OBJECT);
   }
 
+  /**
+   * getMapFor 
+   * Returns a Map instance of the given model name
+   * 
+   * @param string $class 
+   * @static
+   * @access public
+   * @return PgLookBaseObjectMap
+   */
   public static function getMapFor($class)
   {
     $class_name = $class.'Map';

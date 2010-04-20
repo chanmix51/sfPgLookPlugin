@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * PgLookBaseObjectMap 
+ * 
+ * @abstract
+ * @package sfPgLookPlugin
+ * @version $id$
+ * @copyright 2010 Grégoire HUBERT 
+ * @author Grégoire HUBERT <hubert.greg@gmail.com>
+ * @license MIT/X11 {@link http://opensource.org/licenses/mit-license.php}
+ */
 abstract class PgLookBaseObjectMap
 {
   protected $connection;
@@ -8,8 +18,29 @@ abstract class PgLookBaseObjectMap
   protected $field_definitions = array();
   protected $pk_fields = array();
 
+  /**
+   * initialize 
+   * This method is called by the constructor, use it to declare
+   * - connection the database name to use to query on this model objects
+   * - fields_definitions (mandatory)
+   * - object_class The class name of the corresponding model (mandatory)
+   * - primary key (optional)
+   * 
+   * @abstract
+   * @access protected
+   * @return void
+   */
   abstract protected function initialize();
 
+  /**
+   * addField 
+   * Add a new field definition
+   *
+   * @param string $name 
+   * @param string $type 
+   * @access protected
+   * @return void
+   */
   protected function addField($name, $type)
   {
     if (array_key_exists($name, $this->field_definitions))
@@ -20,6 +51,13 @@ abstract class PgLookBaseObjectMap
     $this->field_definitions[$name] = $type;
   }
 
+  /**
+   * createObject 
+   * Return a new instance of the corresponding model class
+   * 
+   * @access public
+   * @return PgLookBaseObject
+   */
   public function createObject()
   {
     $class_name = $this->object_class;
@@ -27,11 +65,25 @@ abstract class PgLookBaseObjectMap
     return new $class_name($this->pk_fields, $this->field_definitions);
   }
 
+  /**
+   * getFieldDefinitions 
+   * Return the field definitions of the current model
+   * 
+   * @access public
+   * @return Array(string)
+   */
   public function getFieldDefinitions()
   {
     return $this->field_definitions;
   }
 
+  /**
+   * __construct 
+   * The constructor. Most of the time, you should use PgLook::getMapFor($class_name) to chain calls
+   * 
+   * @access public
+   * @return void
+   */
   public function __construct()
   {
     $this->initialize();
@@ -50,11 +102,28 @@ abstract class PgLookBaseObjectMap
     }
   }
 
+  /**
+   * prepareStatement 
+   * Prepare a SQL statement
+   * 
+   * @param string $sql 
+   * @access protected
+   * @return PDOStatement
+   */
   protected function prepareStatement($sql)
   {
     return $this->connection->getPdo()->prepare($sql);
   }
 
+  /**
+   * bindParams 
+   * Bind parameters to a prepared statement
+   * 
+   * @param PDOStatement $stmt 
+   * @param mixed $values 
+   * @access protected
+   * @return PDOStatement
+   */
   protected function bindParams($stmt, $values)
   {
     foreach ($values as $pos => $value)
@@ -85,6 +154,15 @@ abstract class PgLookBaseObjectMap
     return $stmt;
   }
 
+  /**
+   * doQuery 
+   * Performs a query, hydrate the results and return a collection
+   * 
+   * @param string $sql 
+   * @param mixed $values 
+   * @access protected
+   * @return PgLookCollection
+   */
   protected function doQuery($sql, $values)
   {
     $stmt = $this->prepareStatement($sql);
@@ -104,11 +182,29 @@ abstract class PgLookBaseObjectMap
     }
   }
 
+  /**
+   * query 
+   * Callable to perform a query
+   * 
+   * @param string $sql 
+   * @param mixed $values 
+   * @access public
+   * @return PgLookCollection
+   */
   public function query($sql, $values)
   {
     return $this->doQuery($sql, $values);
   }
 
+  /**
+   * queries 
+   * One query with a lot of values is faster than X queries
+   * 
+   * @param string $sql 
+   * @param mixed $value_set 
+   * @access public
+   * @return PgLookCollection
+   */
   public function queries($sql, $value_set)
   {
     $stmt = $this->prepareStatement($sql);
@@ -123,6 +219,14 @@ abstract class PgLookBaseObjectMap
     return $stmts;
   }
 
+  /**
+   * createSqlAndFrom 
+   * Create a SQL condition from the associative array with AND logical operator
+   * 
+   * @param array $values 
+   * @access protected
+   * @return string
+   */
   protected function createSqlAndFrom($values)
   {
     $sql = array();
@@ -134,6 +238,13 @@ abstract class PgLookBaseObjectMap
     return join(' AND ', $sql);
   }
 
+  /**
+   * createObjectsFromStmt 
+   * 
+   * @param PDOStatement $stmt 
+   * @access protected
+   * @return PgLookCollection
+   */
   protected function createObjectsFromStmt(PDOStatement $stmt)
   {
     $objects = array();
@@ -149,21 +260,49 @@ abstract class PgLookBaseObjectMap
     return new PgLookCollection($objects);
   }
 
+  /**
+   * findAll 
+   * The simplest query on a table
+   * 
+   * @access public
+   * @return PgLookCollection
+   */
   public function findAll()
   {
     return $this->query(sprintf('SELECT * FROM %s;', $this->object_name), array());
   }
 
+  /**
+   * findWhere 
+   * 
+   * @param string $where 
+   * @param array $values 
+   * @access public
+   * @return PgLookCollection
+   */
   public function findWhere($where, $values)
   {
     return $this->query(sprintf('SELECT * FROM %s WHERE %s;', $this->object_name, $where), $values);
   }
 
+  /**
+   * getPrimaryKey 
+   * 
+   * @access public
+   * @return array
+   */
   public function getPrimaryKey()
   {
     return $this->pk_fields;
   }
 
+  /**
+   * findByPk 
+   * 
+   * @param Array $values 
+   * @access public
+   * @return PgLookBaseObject
+   */
   public function findByPk(Array $values)
   {
     if (count(array_diff(array_keys($values), $this->getPrimaryKey())) != 0)
@@ -176,6 +315,15 @@ abstract class PgLookBaseObjectMap
     return count($result) == 1 ? $result[0] : null;
   }
 
+  /**
+   * convertPg 
+   * Convert values to and from Postgresql
+   *
+   * @param Array $values Values to convert
+   * @param mixed $method can be "fromPg" and "toPg"
+   * @access protected
+   * @return array
+   */
   protected function convertPg(Array $values, $method)
   {
     $out_values = array();
@@ -207,6 +355,15 @@ abstract class PgLookBaseObjectMap
     return $out_values;
   }
 
+  /**
+   * checkObject 
+   * Check if the instance is from the expected class or throw an exception
+   *
+   * @param PgLookBaseObject $object 
+   * @param string $message 
+   * @access protected
+   * @return void
+   */
   protected function checkObject(PgLookBaseObject $object, $message)
   {
     if (get_class($object) !== $this->object_class)
@@ -215,12 +372,27 @@ abstract class PgLookBaseObjectMap
     }
   }
 
+  /**
+   * deleteByPk 
+   * 
+   * @param Array $pk 
+   * @access public
+   * @return PgLookCollection
+   */
   public function deleteByPk(Array $pk)
   {
     $sql = sprintf('DELETE FROM %s WHERE %s', $this->object_name, $this->createSqlAndFrom($pk));
     return $this->query($sql, array_values($pk));
   }
 
+  /**
+   * saveOne 
+   * Save an instance. Use this to insert or update an object
+   *
+   * @param PgLookBaseObject $object 
+   * @access public
+   * @return PgLookCollection
+   */
   public function saveOne(PgLookBaseObject $object)
   {
     $this->checkObject($object, sprintf('"%s" class does not know how to save "%s" objects.', get_class($this), get_class($object)));
@@ -240,6 +412,13 @@ abstract class PgLookBaseObjectMap
     }
   }
 
+  /**
+   * parseForInsert 
+   * 
+   * @param PgLookBaseObject $object 
+   * @access protected
+   * @return array
+   */
   protected function parseForInsert($object)
   {
     $tmp = array();
@@ -252,6 +431,13 @@ abstract class PgLookBaseObjectMap
     return $tmp;
   }
 
+  /**
+   * parseForUpdate 
+   * 
+   * @param PgLookBaseObject $object 
+   * @access protected
+   * @return string
+   */
   protected function parseForUpdate($object)
   {
     $tmp = array();
@@ -264,11 +450,25 @@ abstract class PgLookBaseObjectMap
     return implode(',', $tmp);
   }
 
+  /**
+   * hasField 
+   * Does this class have the given field
+   * 
+   * @param string $field 
+   * @access public
+   * @return boolean
+   */
   public function hasField($field)
   {
     return array_key_exists($field, $this->field_definitions);
   }
 
+  /**
+   * getTableName 
+   * 
+   * @access public
+   * @return string
+   */
   public function getTableName()
   {
     return $this->object_name;
