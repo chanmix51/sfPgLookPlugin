@@ -2,9 +2,11 @@ sfPgLookPlugin
 ===============
 
 This plugin is aimed at providing a fast & lightweight ORM based on PDO to take advantage of Postgresql features :
- *  Extra data types like key => value store, hierachical data and arrays, ISBN, IPV4 adresses etc...
- *  Regular expressions 
+
+ *  Extra data types like key => value store, hierachical data and arrays, vectors, ISBN, IPV4 adresses etc...
+ *  Regular expressions in SQL
  *  multiple tables inheritance
+ *  schemas and views
  *  window functions
  *  stored procedures
  *  triggers
@@ -13,9 +15,10 @@ This plugin is aimed at providing a fast & lightweight ORM based on PDO to take 
 Because the query language is raw SQL.
 
 The abstraction layer turns data in your database into PHP objects in your code using a _translator_ :
+
  *  booleans in postgres will be boolean in PHP
  *  arrays in postgres will be arrays in PHP
 
-For now, simple CRUD operations are merely supported, no code generation, no admin gen, no schema, no fixtures, just a kernel to make fast and efficient queries.
+For now, simple CRUD operations are supported, no code generation, no admin gen, no schema, no fixtures, just a kernel to make fast and efficient queries.
 
-Queries return Collections, with handy methods like in Propel 1.5 : isFirst, isLast, isOdd, getOddEven etc ...
+Queries return Collections, with handy iterator methods like in Propel 1.5 : isFirst, isLast, isOdd, getOddEven etc ...

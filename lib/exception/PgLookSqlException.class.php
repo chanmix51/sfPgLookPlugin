@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * PgLookSqlException 
+ * 
+ * SQL exceptions
+ * get error from the rdbms with the PDOStatement object
+ * see http://www.postgresql.org/docs/8.4/static/errcodes-appendix.html
+ *
+ * @uses PgLookException
+ * @package sfPgLookPlugin
+ * @version $id$
+ * @copyright 2010 Grégoire HUBERT 
+ * @author Grégoire HUBERT <hubert.greg@gmail.com>
+ * @license MIT/X11 {@link http://opensource.org/licenses/mit-license.php}
+ */
+
 class PgLookSqlException extends PgLookException
 {
   protected $error_state;
@@ -25,7 +40,7 @@ class PgLookSqlException extends PgLookException
    * http://www.postgresql.org/docs/8.4/interactive/errcodes-appendix.html
    *
    * @access public
-   * @return void
+   * @return string
    */
   public function getSQLErrorState()
   {
@@ -37,7 +52,7 @@ class PgLookSqlException extends PgLookException
    * Returns the internal driver error code
    *
    * @access public
-   * @return void
+   * @return string
    */
   public function getSQLExtendedErrorStatus()
   {
@@ -48,7 +63,7 @@ class PgLookSqlException extends PgLookException
    * getSQLErrorMessage 
    * 
    * @access public
-   * @return void
+   * @return string
    */
   public function getSQLErrorMessage()
   {

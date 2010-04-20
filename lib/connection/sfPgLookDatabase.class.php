@@ -1,9 +1,27 @@
 <?php
 
+/**
+ * sfPgLookDatabase 
+ * 
+ * @uses sfDatabase
+ * @package sfPgLookPlugin
+ * @version $id$
+ * @copyright 2010 Grégoire HUBERT 
+ * @author Grégoire HUBERT <hubert.greg@gmail.com>
+ * @license MIT/X11 {@link http://opensource.org/licenses/mit-license.php}
+ */
 class sfPgLookDatabase extends sfDatabase
 {
   protected $_handler;
 
+  /**
+   * __construct 
+   * The constructor, see @sfDatabase
+   *
+   * @param array $parameters 
+   * @access public
+   * @return void
+   */
   public function __construct($parameters = array())
   {
     parent::initialize($parameters);
@@ -21,6 +39,13 @@ class sfPgLookDatabase extends sfDatabase
     }
   }
 
+  /**
+   * processDsn 
+   * Sets the different parameters from the DSN
+   *
+   * @access protected
+   * @return void
+   */
   protected function processDsn()
   {
     $dsn = $this->getParameter('dsn');
@@ -65,6 +90,13 @@ class sfPgLookDatabase extends sfDatabase
     $this->setParameter('database', $database);
   }
 
+  /**
+   * connect 
+   * see @sfDatabase
+   *
+   * @access public
+   * @return void
+   */
   public function connect()
   {
     $connect_string = sprintf('%s:host=%s dbname=%s user=%s', 
@@ -87,11 +119,25 @@ class sfPgLookDatabase extends sfDatabase
     }
   }
 
+  /**
+   * shutdown 
+   * see @sfDatabase
+   * 
+   * @access public
+   * @return void
+   */
   public function shutdown()
   {
     $this->_handler = null;
   }
 
+  /**
+   * getPdo 
+   * Returns the PDO instance of the associated connection
+   * 
+   * @access public
+   * @return PDO
+   */
   public function getPdo()
   {
     if (is_null($this->_handler))
