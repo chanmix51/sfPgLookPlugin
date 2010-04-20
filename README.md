@@ -1,7 +1,7 @@
 sfPgLookPlugin
 ===============
 
-This plugin is aimed at providing a fast & lightweight ORM based on PDO to take advantage of Postgresql features :
+This plugin aims at providing a fast & lightweight ORM based on PDO to take advantage of Postgresql features :
 
  *  Extra data types like key => value store, hierachical data and arrays, vectors, ISBN, IPV4 adresses etc...
  *  Regular expressions in SQL
