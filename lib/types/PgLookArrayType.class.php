@@ -12,7 +12,7 @@ class PgLookArrayType extends PgLookBaseType
   public static function fromPg($data)
   {
     $data = ltrim(rtrim($data, '}'), '{');
-    $data_array = split(',', $data);
+    $data_array = preg_split('/,/', $data);
 
     $out_data = array();
     $type = self::$subtype;

@@ -473,4 +473,17 @@ abstract class PgLookBaseObjectMap
   {
     return $this->object_name;
   }
+
+  /**
+   * deleteOne 
+   * 
+   * @param PgLookBaseObject $object 
+   * @access public
+   * @return void
+   */
+  public function deleteOne(PgLookBaseObject $object)
+  {
+    $this->deleteByPk($object->getPrimaryKey());
+    $object->_setStatus(PgLookBaseObject::NONE);
+  }
 }
