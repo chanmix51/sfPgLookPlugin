@@ -26,13 +26,6 @@ class PgLookArrayType extends PgLookBaseType
 
   public static function toPg($data)
   {
-    $string = array();
-    $type = self::$subtype;
-    foreach($data as $sub_data)
-    {
-      $string[] = call_user_func(array($type, 'toPg'), $sub_data);
-    }
-
-    return sprintf("'{%s}'", join(',', $string));
+    return sprintf("'{%s}'", join(',', $data));
   }
 }
