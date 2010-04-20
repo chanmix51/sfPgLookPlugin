@@ -8,4 +8,9 @@ class PgLookStrType extends PgLookBaseType
 
     return "'$data'";
   }
+
+  public static function fromPg($data)
+  {
+    return trim($data, '"');
+  }
 }
