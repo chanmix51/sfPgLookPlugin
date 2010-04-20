@@ -393,7 +393,7 @@ abstract class PgLookBaseObjectMap
    * @access public
    * @return PgLookCollection
    */
-  public function saveOne(PgLookBaseObject $object)
+  public function saveOne(PgLookBaseObject &$object)
   {
     $this->checkObject($object, sprintf('"%s" class does not know how to save "%s" objects.', get_class($this), get_class($object)));
 
@@ -401,14 +401,18 @@ abstract class PgLookBaseObjectMap
     {
       $sql = sprintf('UPDATE %s SET %s WHERE %s', $this->object_name, $this->parseForUpdate($object), $this->createSqlAndFrom($object->getPrimaryKey()));
 
-      return $this->query($sql, array_values($object->getPrimaryKey()));
+      $this->beginTransaction()->query($sql, array_values($object->getPrimaryKey()));
+      $object = $this->findByPk($object->getPrimaryKey());
+      $this->commitTransaction();
     }
     else
     {
       $pg_values = $this->parseForInsert($object);
       $sql = sprintf('INSERT INTO %s (%s) VALUES (%s) RETURNING *;', $this->object_name, join(',', array_keys($pg_values)), join(',', array_values($pg_values)));
 
-      return $this->query($sql, array());
+      $collection = $this->query($sql, array());
+      $object = $collection[0];
+      $object->_setStatus(PgLookBaseObject::EXIST);
     }
   }
 
@@ -485,5 +489,53 @@ abstract class PgLookBaseObjectMap
   {
     $this->deleteByPk($object->getPrimaryKey());
     $object->_setStatus(PgLookBaseObject::NONE);
+  }
+
+  /**
+   * beginTransaction 
+   * 
+   * @access public
+   * @return void
+   */
+  public function beginTransaction()
+  {
+    if (!$this->connection->getPdo()->beginTransaction())
+    {
+      throw new PgLookException(sprintf('Error while trying to start a transaction. SQL said "%s".', $this->connection->getPdo()->errorInfo()));
+    }
+
+    return $this;
+  }
+
+  /**
+   * commitTransaction 
+   * 
+   * @access public
+   * @return void
+   */
+  public function commitTransaction()
+  {
+    if (!$this->connection->getPdo()->commit())
+    {
+      throw new PgLookException(sprintf('Error while trying to commit a transaction. SQL said "%s".', $this->connection->getPdo()->errorInfo()));
+    }
+
+    return $this;
+  }
+
+  /**
+   * rollbackTransaction 
+   * 
+   * @access public
+   * @return void
+   */
+  public function rollbackTransaction()
+  {
+    if (!$this->connection->getPdo()->rollback())
+    {
+      throw new PgLookException(sprintf('Error while trying to rollback a transaction. SQL said "%s".', $this->connection->getPdo()->errorInfo()));
+    }
+
+    return $this;
   }
 }
