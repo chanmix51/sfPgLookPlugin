@@ -132,13 +132,13 @@ abstract class PgLookBaseObject
   }
 
   /**
-   * getFields 
-   * Returns the 
+   * extract 
+   * Returns the fields array
    * 
    * @access public
    * @return array
    */
-  public function getFields()
+  public function extract()
   {
     return $this->fields;
   }
