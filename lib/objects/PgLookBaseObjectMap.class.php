@@ -426,7 +426,7 @@ abstract class PgLookBaseObjectMap
   protected function parseForInsert($object)
   {
     $tmp = array();
-    foreach ($this->convertPg($object->getFields(), 'toPg') as $field_name => $field_value)
+    foreach ($this->convertPg($object->extract(), 'toPg') as $field_name => $field_value)
     {
       if (array_key_exists($field_name, $object->getPrimaryKey())) continue;
       $tmp[$field_name] = $field_value;
@@ -445,7 +445,7 @@ abstract class PgLookBaseObjectMap
   protected function parseForUpdate($object)
   {
     $tmp = array();
-    foreach ($this->convertPg($object->getFields(), 'toPg') as $field_name => $field_value)
+    foreach ($this->convertPg($object->extract(), 'toPg') as $field_name => $field_value)
     {
       if (array_key_exists($field_name, $object->getPrimaryKey())) continue;
       $tmp[] = sprintf('%s=%s', $field_name, $field_value);

@@ -1,30 +1,6 @@
 <?php
 
-include(dirname(__FILE__).'/../../../../test/bootstrap/unit.php');
-
-PgLook::saveConnections(new sfDatabaseManager($configuration));
-
-class TestTable extends PgLookBaseObject
-{
-}
-
-class TestTableMap extends PgLookBaseObjectMap
-{
-  protected function initialize()
-  {
-    $this->connection = PgLook::getConnection();
-    $this->object_class = 'TestTable';
-    $this->object_name = 'test_table';
-    $this->field_definitions = array(
-      'id' => 'PgLookIntType',
-      'created_at' =>    'PgLookTimeStampType',
-      'title'      =>    'PgLookStrType',
-      'authors'    =>    'PgLookArrayType[PgLookStrType]',
-      'is_ok'      =>    'PgLookBoolType'
-    );
-    $this->pk_fields    = array('id');
-  }
-}
+include(dirname(__FILE__).'/../bootstrap/unit.php');
 
 class my_test 
 { 
@@ -35,7 +11,7 @@ class my_test
   public function __construct()
   {
     $this->test = new lime_test();
-    PgLook::executeAnonymousQuery('CREATE TEMP TABLE test_table (id SERIAL PRIMARY KEY, created_at TIMESTAMP NOT NULL DEFAULT now(), title VARCHAR NOT NULL, authors VARCHAR[] NOT NULL, is_ok BOOLEAN NOT NULL DEFAULT true);');
+    PgLook::getMapFor('TestTable')->createTable();
   }
 
   public function resetObjects()
@@ -60,7 +36,7 @@ class my_test
 
   protected function testObjectFields($values)
   {
-    foreach ($this->obj->getFields() as $name => $value)
+    foreach ($this->obj->extract() as $name => $value)
     {
       if (gettype($value) == 'object') continue;
       $this->test->is($value, $values[$name], sprintf('Comparing "%s"', $name));
@@ -100,7 +76,7 @@ class my_test
   {
     $this->test->diag('TestTableMap::findByPk()');
     $object = $this->map->findByPk($values);
-    $this->testObjectFields($object->getFields());
+    $this->testObjectFields($object->extract());
 
     return $this;
   }
