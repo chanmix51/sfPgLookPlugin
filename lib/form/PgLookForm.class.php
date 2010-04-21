@@ -52,7 +52,7 @@ abstract class PgLookForm extends PgLookBaseForm
       $this->object = $object;
     }
 
-    parent::__construct($this->object->getFields(), $options, $CSRFSecret);
+    parent::__construct($this->object->extract(), $options, $CSRFSecret);
   }
 
   /**
