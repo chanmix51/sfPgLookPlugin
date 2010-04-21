@@ -124,16 +124,15 @@ class my_test
   }
 }
 
-
 $test = new my_test();
 $test->testCreate()
   ->testHydrate(array('title' => 'title test', 'authors' => array('pika chu')), array('title' => 'title test', 'authors' => array('pika chu')))
   ->testSaveOne()
   ->testHydrate(array(), array('id' => 1, 'title' => 'title test', 'authors' => array('pika chu'), 'is_ok' => true))
   ->testRetreiveByPk(array('id' => 1))
-  ->testHydrate(array('title' => 'modified title'), array('id' => 1, 'title' => 'modified title', 'authors' => array('pika chu'), 'is_ok' => true))
+  ->testHydrate(array('title' => 'modified title', 'authors' => array('pika chu', 'john doe')), array('id' => 1, 'title' => 'modified title', 'authors' => array('pika chu', 'john doe'), 'is_ok' => true))
   ->testSaveOne()
-  ->testHydrate(array(), array('id' => 1, 'title' => 'modified title', 'authors' => array('pika chu'), 'is_ok' => true))
+  ->testHydrate(array(), array('id' => 1, 'title' => 'modified title', 'authors' => array('pika chu', 'john doe'), 'is_ok' => true))
   ->testRetreiveByPk(array('id' => 1))
   ->testDeleteOne()
   ;
