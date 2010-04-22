@@ -156,14 +156,14 @@ abstract class PgLookBaseObjectMap
 
   /**
    * doQuery 
-   * Performs a query, hydrate the results and return a collection
+   * Performs a query, returns the PDO Statment instance used
    * 
    * @param string $sql 
    * @param mixed $values 
    * @access protected
-   * @return PgLookCollection
+   * @return PDOStatement
    */
-  protected function doQuery($sql, $values)
+  protected function doQuery($sql, $values = array())
   {
     $stmt = $this->prepareStatement($sql);
     $this->bindParams($stmt, $values);
@@ -173,50 +173,27 @@ abstract class PgLookBaseObjectMap
       {
         throw new PgLookSqlException($stmt, $sql);
       }
-
-      return $this->createObjectsFromStmt($stmt);
     }
     catch(PDOException $e)
     {
       throw new PgLookException('PDOException while performing SQL query «%s». The driver said "%s".', $sql, $e->getMessage());
     }
+
+    return $stmt;
   }
 
   /**
    * query 
-   * Callable to perform a query
+   * Perform a query, hydrate the results and return a collection
    * 
    * @param string $sql 
    * @param mixed $values 
    * @access public
    * @return PgLookCollection
    */
-  public function query($sql, $values)
+  public function query($sql, $values = array())
   {
-    return $this->doQuery($sql, $values);
-  }
-
-  /**
-   * queries 
-   * One query with a lot of values is faster than X queries
-   * 
-   * @param string $sql 
-   * @param mixed $value_set 
-   * @access public
-   * @return PgLookCollection
-   */
-  public function queries($sql, $value_set)
-  {
-    $stmt = $this->prepareStatement($sql);
-    $stmts = array();
-    foreach($value_set as $values)
-    {
-      $stmt = $this->doQuery($stmt, $values);
-      $stmts[] = clone $stmt;
-      $stmt->closeCursor();
-    }
-
-    return $stmts;
+    return $this->createObjectsFromStmt($this->doQuery($sql, $values));
   }
 
   /**
