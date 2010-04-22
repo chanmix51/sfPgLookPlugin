@@ -98,12 +98,23 @@ class my_test
 
     return $this;
   }
+
+  public function testQuery($sql, $values, $num_result)
+  {
+    $this->test->diag('TestTableMap::query()');
+    $results = $this->map->query($sql, $values);
+    $this->test->isa_ok($results, 'PgLookCollection', 'The result is a collection');
+    $this->test->is($results->count(), $num_result, 'We have the good number of results');
+
+    return $this;
+  }
 }
 
 $test = new my_test();
 $test->testCreate()
   ->testHydrate(array('title' => 'title test', 'authors' => array('pika chu')), array('title' => 'title test', 'authors' => array('pika chu')))
   ->testSaveOne()
+  ->testQuery('SELECT * FROM test_table WHERE id < ?', array(10), 1)
   ->testHydrate(array(), array('id' => 1, 'title' => 'title test', 'authors' => array('pika chu'), 'is_ok' => true))
   ->testRetreiveByPk(array('id' => 1))
   ->testHydrate(array('title' => 'modified title', 'authors' => array('pika chu', 'john doe')), array('id' => 1, 'title' => 'modified title', 'authors' => array('pika chu', 'john doe'), 'is_ok' => true))
@@ -111,4 +122,5 @@ $test->testCreate()
   ->testHydrate(array(), array('id' => 1, 'title' => 'modified title', 'authors' => array('pika chu', 'john doe'), 'is_ok' => true))
   ->testRetreiveByPk(array('id' => 1))
   ->testDeleteOne()
+  ->testQuery('SELECT * FROM test_table', array(), 0)
   ;
