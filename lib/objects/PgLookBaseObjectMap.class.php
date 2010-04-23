@@ -206,13 +206,13 @@ abstract class PgLookBaseObjectMap
    */
   protected function createSqlAndFrom($values)
   {
-    $sql = array();
+    $where = new PgLookWhere();
     foreach ($values as $key => $value)
     {
-      $sql[] = "$key = ?";
+      $where->andWhere(sprintf('%s = ?', $key), array($value));
     }
 
-    return join(' AND ', $sql);
+    return $where;
   }
 
   /**
@@ -381,6 +381,7 @@ abstract class PgLookBaseObjectMap
       $this->beginTransaction()->query($sql, array_values($object->getPrimaryKey()));
       $object = $this->findByPk($object->getPrimaryKey());
       $this->commitTransaction();
+      $object->_setStatus(PgLookBaseObject::EXIST);
     }
     else
     {
