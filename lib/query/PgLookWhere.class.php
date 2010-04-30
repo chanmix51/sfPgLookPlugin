@@ -1,5 +1,18 @@
 <?php
 
+/**
+ * PgLookWhere 
+ * 
+ * This class represents a WHERE clause of a SQL statement. It deals with AND & 
+ * OR operator you can add using handy methods. This allows you to build 
+ * queries dynamically.
+ *
+ * @package sfPgLookPlugin
+ * @version $id$
+ * @copyright 2010 Grégoire HUBERT 
+ * @author Grégoire HUBERT <hubert.greg@gmail.com>
+ * @license X11 {@link http://opensource.org/licenses/mit-license.php}
+ */
 class PgLookWhere
 {
   public $stack = array();
@@ -7,11 +20,30 @@ class PgLookWhere
   public $values = array();
   public $operator;
 
+  /**
+   * create 
+   *
+   * A constructor you can chain from
+   * 
+   * @param string $element 
+   * @param array $values 
+   * @static
+   * @access public
+   * @return PgLookWhere
+   */
   public static function create($element = null, $values = array())
   {
     return new self($element, $values);
   }
 
+  /**
+   * __construct 
+   * 
+   * @param string $element 
+   * @param array $values 
+   * @access public
+   * @return void
+   */
   public function __construct($element = null, $values = array())
   {
     if (!is_null($element))
@@ -22,6 +54,16 @@ class PgLookWhere
     }
   }
 
+  /**
+   * setOperator 
+   * 
+   * is it an AND or an OR ?
+   * or something else (XOR maybe)
+   *
+   * @param string $operator 
+   * @access public
+   * @return PgLookWhere
+   */
   public function setOperator($operator)
   {
     $this->operator = $operator;
@@ -29,11 +71,26 @@ class PgLookWhere
     return $this;
   }
 
+  /**
+   * isEmpty 
+   * 
+   * is it a fresh brand new object ?
+   *
+   * @access public
+   * @return boolean
+   */
   public function isEmpty()
   {
     return (is_null($this->element) and count($this->stack) == 0);
   }
 
+  /**
+   * transmute 
+   * 
+   * @param PgLookWhere $where 
+   * @access public
+   * @return void
+   */
   public function transmute(PgLookWhere $where)
   {
     $this->stack = $where->stack;
@@ -42,6 +99,17 @@ class PgLookWhere
     $this->values = $where->values;
   }
 
+  /**
+   * addWhere 
+   *
+   * You can add a new WHERE clause with your own operator
+   * 
+   * @param string $element 
+   * @param array $values 
+   * @param string $operator 
+   * @access public
+   * @return PgLookWhere
+   */
   public function addWhere($element, $values, $operator)
   {
     if (!$element instanceof PgLookWhere)
@@ -80,16 +148,43 @@ class PgLookWhere
     return $this;
   }
 
+  /**
+   * andWhere 
+   * 
+   * Or use a ready to use AND where clause
+   *
+   * @param string $element 
+   * @param array $values 
+   * @access public
+   * @return PgLookWhere
+   */
   public function andWhere($element, $values = array())
   {
      return $this->addWhere($element, $values, 'AND');
   }
 
+  /**
+   * orWhere 
+   * 
+   * OR where clause
+   *
+   * @param string $element 
+   * @param array $values 
+   * @access public
+   * @return PgLookWhere
+   */
   public function orWhere($element, $values = array())
   {
     return $this->addWhere($element, $values, 'OR');
   }
 
+  /**
+   * setStack 
+   * 
+   * @param Array $stack 
+   * @access public
+   * @return PgLookWhere
+   */
   public function setStack(Array $stack)
   {
     $this->stack = $stack;
@@ -97,6 +192,14 @@ class PgLookWhere
     return $this;
   }
 
+  /**
+   * __toString 
+   * 
+   * where your SQL statement is built
+   *
+   * @access public
+   * @return string
+   */
   public function __toString()
   {
     if ($this->isEmpty())
@@ -109,16 +212,34 @@ class PgLookWhere
     }
   }
 
+  /**
+   * hasElement 
+   * 
+   * @access public
+   * @return boolean
+   */
   public function hasElement()
   {
     return ! is_null($this->element);
   }
 
+  /**
+   * getElement 
+   * 
+   * @access public
+   * @return string
+   */
   public function getElement()
   {
     return $this->element;
   }
 
+  /**
+   * parse 
+   * 
+   * @access protected
+   * @return string
+   */
   protected function parse()
   {
     if ($this->hasElement())
@@ -135,6 +256,14 @@ class PgLookWhere
     return sprintf('(%s)', join(sprintf(' %s ', $this->operator), $stack));
   }
 
+  /**
+   * getValues 
+   *
+   * get all the values back for the prepated statement
+   * 
+   * @access public
+   * @return void
+   */
   public function getValues()
   {
     if ($this->isEmpty())

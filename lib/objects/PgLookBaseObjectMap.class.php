@@ -516,4 +516,9 @@ abstract class PgLookBaseObjectMap
 
     return $this;
   }
+
+  public function findPgLookWhere(PgLookWhere $where)
+  {
+    return $this->findWhere($where, $where->getValues());
+  }
 }

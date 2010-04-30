@@ -108,12 +108,21 @@ class my_test
 
     return $this;
   }
+
+  public function testFindPgLookWhere($count)
+  {
+    $this->test->diag('TestTableMap::findPgLookWhere()');
+    $this->test->is($this->map->findPgLookWhere(new PgLookWhere())->count(), $count, 'PgLookWhere returns expected results count');
+
+    return $this;
+  }
 }
 
 $test = new my_test();
 $test->testCreate()
   ->testHydrate(array('title' => 'title test', 'authors' => array('pika chu')), array('title' => 'title test', 'authors' => array('pika chu')))
   ->testSaveOne()
+  ->testFindPgLookWhere(1)
   ->testQuery('SELECT * FROM test_table WHERE id < ?', array(10), 1)
   ->testHydrate(array(), array('id' => 1, 'title' => 'title test', 'authors' => array('pika chu'), 'is_ok' => true))
   ->testRetreiveByPk(array('id' => 1))
@@ -123,4 +132,5 @@ $test->testCreate()
   ->testRetreiveByPk(array('id' => 1))
   ->testDeleteOne()
   ->testQuery('SELECT * FROM test_table', array(), 0)
+  ->testFindPgLookWhere(0)
   ;
