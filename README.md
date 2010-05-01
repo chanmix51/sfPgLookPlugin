@@ -1,7 +1,7 @@
 sfPgLookPlugin
 ===============
 
-This plugin aims at providing a fast & lightweight ORM based on PDO to take advantage of Postgresql features :
+This is symfony plugin that aims at providing a simple, fast & lightweight ORM based on PDO to take advantage of Postgresql features :
 
  *  Extra data types like key => value store, hierachical data and arrays, vectors, ISBN, IPV4 adresses etc...
  *  Regular expressions in SQL
@@ -33,4 +33,5 @@ The abstraction layer turns data in your database into PHP objects in your code 
 For now, simple CRUD operations and basic forms are supported, no code generation, no admin gen, no schema, no fixtures, just a kernel to make easy, fast and efficient queries.
 
 Queries return Collections, with handy iterator methods like in Propel 1.5 : isFirst, isLast, isOdd, getOddEven etc ...
+
 I haven t tested it yet with PostGIS but it should work fine.
