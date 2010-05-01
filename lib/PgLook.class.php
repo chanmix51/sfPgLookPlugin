@@ -11,7 +11,7 @@
  */
 class PgLook
 {
-  const VERSION = 'ALPHA - 2';
+  const VERSION = 'BETA - 1';
   static $connections = array();
 
   /**
