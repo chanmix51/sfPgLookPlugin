@@ -14,14 +14,17 @@ This plugin aims at providing a fast & lightweight ORM based on PDO to take adva
 
 Because the query language is SQL.
 
-    PgLook::getMapFor('Book')->query(' SELECT * FROM book WHERE title ~ ? AND ? ~ ANY (tags)', array('postgresql', 'must read'));
-    // same as
-    PgLook::getMapFor('Book')->findWhere('title ~ ? AND ? ~ ANY (tags)', array('postgresql', 'must read'));
-    // same as
-    $where = PgLookWhere::create('title ~ ?', array('postgresql'))
-      ->andWhere('? ANY (tags)', array('must read'));
-
-    PgLook::getMapFor('Book')->findPgLookWhere($where);
+<code><span style="color: #000000">
+<span style="color: #0000BB">PgLook</span><span style="color: #007700">::</span><span style="color: #0000BB">getMapFor</span><span style="color: #007700">(</span><span style="color: #DD0000">'Book'</span><span style="color: #007700">)-&gt;</span><span style="color: #0000BB">query</span><span style="color: #007700">(</span><span style="color: #DD0000">'&nbsp;SELECT&nbsp;*&nbsp;FROM&nbsp;book&nbsp;WHERE&nbsp;title&nbsp;~&nbsp;?&nbsp;AND&nbsp;?&nbsp;~&nbsp;ANY&nbsp;(tags)'</span><span style="color: #007700">,&nbsp;array(</span><span style="color: #DD0000">'postgresql'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'must&nbsp;read'</span><span style="color: #007700">));
+<br></span><span style="color: #FF8000">//&nbsp;same&nbsp;as
+<br></span><span style="color: #0000BB">PgLook</span><span style="color: #007700">::</span><span style="color: #0000BB">getMapFor</span><span style="color: #007700">(</span><span style="color: #DD0000">'Book'</span><span style="color: #007700">)-&gt;</span><span style="color: #0000BB">findWhere</span><span style="color: #007700">(</span><span style="color: #DD0000">'title&nbsp;~&nbsp;?&nbsp;AND&nbsp;?&nbsp;~&nbsp;ANY&nbsp;(tags)'</span><span style="color: #007700">,&nbsp;array(</span><span style="color: #DD0000">'postgresql'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'must&nbsp;read'</span><span style="color: #007700">));
+<br></span><span style="color: #FF8000">//&nbsp;same&nbsp;as
+<br></span><span style="color: #0000BB">$where&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">PgLookWhere</span><span style="color: #007700">::</span><span style="color: #0000BB">create</span><span style="color: #007700">(</span><span style="color: #DD0000">'title&nbsp;~&nbsp;?'</span><span style="color: #007700">,&nbsp;array(</span><span style="color: #DD0000">'postgresql'</span><span style="color: #007700">))
+<br>&nbsp;&nbsp;-&gt;</span><span style="color: #0000BB">andWhere</span><span style="color: #007700">(</span><span style="color: #DD0000">'?&nbsp;ANY&nbsp;(tags)'</span><span style="color: #007700">,&nbsp;array(</span><span style="color: #DD0000">'must&nbsp;read'</span><span style="color: #007700">));
+<br>
+<br></span><span style="color: #0000BB">PgLook</span><span style="color: #007700">::</span><span style="color: #0000BB">getMapFor</span><span style="color: #007700">(</span><span style="color: #DD0000">'Book'</span><span style="color: #007700">)-&gt;</span><span style="color: #0000BB">findPgLookWhere</span><span style="color: #007700">(</span><span style="color: #0000BB">$where</span><span style="color: #007700">);</span>
+</span>
+</code>
 
 The abstraction layer turns data in your database into PHP objects in your code using a _translator_ :
 
