@@ -35,3 +35,5 @@ For now, simple CRUD operations and basic forms are supported, no code generatio
 Queries return Collections, with handy iterator methods like in Propel 1.5 : isFirst, isLast, isOdd, getOddEven etc ...
 
 I haven t tested it yet with PostGIS but it should work fine.
+
+Last updated 18/05/2010
